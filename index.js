@@ -60,26 +60,28 @@ class XMLStream extends EventEmitter {
       $: attrs
     }
 
+    const parent = this._getLastElementFromTree()
+
     this._elementTree.push({
       isRoot: false,
       element: newElement,
       children: [],
-      parent: this._getLastElementFromTree(),
+      parent: parent,
       name: name
     })
 
-    if (this._currentElement) { // this._currentElement === lastEl.parent.element
-      let lastEl = this._getLastElementFromTree()
-      if (!this._currentElement[name]) {
-        this._currentElement[name] = []
-        lastEl.parent.children.push(name)
+    const current = this._getLastElementFromTree()
+
+    if (!parent.isRoot) {
+      if (!parent.element[name]) {
+        parent.element[name] = []
+        parent.children.push(name)
       }
-      let newLen = this._currentElement[name].push(newElement)
-      lastEl.childIndex = newLen - 1
+      let newLen = parent.element[name].push(newElement)
+      current.childIndex = newLen - 1
     } else {
       this._root[name] = newElement
     }
-    this._currentElement = newElement
   }
 
   _handleEndElement (endName) {
@@ -93,7 +95,6 @@ class XMLStream extends EventEmitter {
     if (name !== endName) {
       return this._handleError(new Error(`parser ended element '${endName}', which is not the element we are building ('${name}')`))
     }
-    this._currentElement = parent
 
     if (!this.explicitArrays) {
       for (let i = 0; i < children.length; i++) {
@@ -115,7 +116,9 @@ class XMLStream extends EventEmitter {
       if (!hasProps && !children.length) {
         el = el._
         // We also need to set this child on the parent.
-        parent.element[name][childIndex] = el
+        if (!parent.isRoot) {
+          parent.element[name][childIndex] = el
+        }
       }
     }
 
@@ -124,7 +127,7 @@ class XMLStream extends EventEmitter {
   }
 
   _handleText (text) {
-    const curel = this._currentElement
+    const curel = this._getLastElementFromTree().element
     curel._ = curel._ || ''
     curel._ += text
   }
