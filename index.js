@@ -4,7 +4,8 @@ const EventEmitter = require('events').EventEmitter
 const Parser = require('node-expat').Parser
 
 class XMLStream extends EventEmitter {
-  constructor (stream, options = {}) {
+  constructor (stream, options) {
+    options = options || {}
     super()
     this.encoding = options.encoding || 'UTF-8'
     this.stream = stream
