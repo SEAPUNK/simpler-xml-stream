@@ -11,10 +11,15 @@ class XMLStream extends EventEmitter {
     this.stream = stream
     this.parser = new Parser(this.encoding)
     this.stream.pipe(this.parser)
+    this.explicitText = options.explicitText
+    this.explicitArrays = options.explicitArrays
     this._attachEvents()
     this._root = {}
-    this._elementTree = [this._root]
-    this._elementNameTree = []
+    this._elementTree = [{
+      isRoot: true,
+      element: this._root,
+      children: null
+    }]
   }
 
   _attachEvents () {
@@ -45,41 +50,83 @@ class XMLStream extends EventEmitter {
     this.parser.destroy()
   }
 
-  _handleStartElement (name, attrs) {
-    this._elementNameTree.push(name)
-    if (this._currentElement) {
-      this._elementTree.push(this._currentElement)
-      if (!this._currentElement[name]) {
-        this._currentElement[name] = []
-      }
-      const newEl = {
-        $: attrs
-      }
-      this._currentElement[name].push(newEl)
-      this._currentElement = newEl
-    } else {
-      this._root[name] = {
-        $: attrs
-      }
-      const el = this._root[name]
-      this._currentElement = el
-    }
+  _getLastElementFromTree () {
+    const tree = this._elementTree
+    return tree[tree.length - 1]
   }
 
-  _handleEndElement (name) {
-    if (this._elementNameTree.pop() !== name) {
-      return this._handleError(new Error(`parser ended element '${name}', which is not the element we are building`))
+  _handleStartElement (name, attrs) {
+    const newElement = {
+      $: attrs
     }
-    const oldElement = this._currentElement
-    this._currentElement = this._elementTree.pop()
-    this.emit('element', oldElement, name)
-    this.emit('element: ' + name, oldElement)
+
+    this._elementTree.push({
+      isRoot: false,
+      element: newElement,
+      children: [],
+      parent: this._getLastElementFromTree(),
+      name: name
+    })
+
+    if (this._currentElement) { // this._currentElement === lastEl.parent.element
+      let lastEl = this._getLastElementFromTree()
+      if (!this._currentElement[name]) {
+        this._currentElement[name] = []
+        lastEl.parent.children.push(name)
+      }
+      let newLen = this._currentElement[name].push(newElement)
+      lastEl.childIndex = newLen - 1
+    } else {
+      this._root[name] = newElement
+    }
+    this._currentElement = newElement
+  }
+
+  _handleEndElement (endName) {
+    const oldElement = this._elementTree.pop()
+    const name = oldElement.name
+    const children = oldElement.children
+    const parent = oldElement.parent
+    const childIndex = oldElement.childIndex
+    let el = oldElement.element
+
+    if (name !== endName) {
+      return this._handleError(new Error(`parser ended element '${endName}', which is not the element we are building ('${name}')`))
+    }
+    this._currentElement = parent
+
+    if (!this.explicitArrays) {
+      for (let i = 0; i < children.length; i++) {
+        let child = children[child]
+        if (el[child].length === 1) {
+          el[child] = el[child][0]
+        }
+      }
+    }
+
+    if (!this.explicitText) {
+      let hasProps = false
+      for (let a in el.$) {
+        if (el.$.hasOwnProperty(a)) {
+          hasProps = true
+          break
+        }
+      }
+      if (!hasProps && !children.length) {
+        el = el._
+        // We also need to set this child on the parent.
+        parent.element[name][childIndex] = el
+      }
+    }
+
+    this.emit('element', el, name)
+    this.emit('element: ' + name, el, name)
   }
 
   _handleText (text) {
     const curel = this._currentElement
-    curel.$text = curel.$text || ''
-    curel.$text += text
+    curel._ = curel._ || ''
+    curel._ += text
   }
 
   pause () {
