@@ -106,6 +106,10 @@ class XMLStream extends EventEmitter {
       }
     }
 
+    if (!el._) {
+      el._ = ''
+    }
+
     if (!this.disableAutotrim) {
       el._ = el._.trim()
     }
