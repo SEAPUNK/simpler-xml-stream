@@ -114,7 +114,7 @@ class XMLStream extends EventEmitter {
       el._ = el._.trim()
     }
 
-    if (!this.explicitText) {
+    if (!this.explicitText) { // $@#%*!!!!
       let hasProps = false
       for (let a in el.$) {
         if (el.$.hasOwnProperty(a)) {
