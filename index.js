@@ -1,7 +1,7 @@
 'use strict'
 
-const {EventEmitter} = require('events')
-const {Parser} = require('node-expat')
+const EventEmitter = require('events').EventEmitter
+const Parser = require('node-expat').Parser
 
 class XMLStream extends EventEmitter {
   constructor (stream, options = {}) {
