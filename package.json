@@ -1,6 +1,6 @@
 {
   "name": "simpler-xml-stream",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "XML streams without the hassle",
   "main": "index.js",
   "scripts": {
