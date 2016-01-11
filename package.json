@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/seapunk/simpler-xml-stream/issues"
   },
-  "homepage": "https://github.com/seapunk/simpler-xml-stream#readme"
+  "homepage": "https://github.com/seapunk/simpler-xml-stream#readme",
+  "dependencies": {
+    "node-expat": "^2.3.12"
+  }
 }
