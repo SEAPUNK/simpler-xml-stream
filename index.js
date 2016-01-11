@@ -5,8 +5,8 @@ const Parser = require('node-expat').Parser
 
 class XMLStream extends EventEmitter {
   constructor (stream, options) {
-    options = options || {}
     super()
+    options = options || {}
     this.encoding = options.encoding || 'UTF-8'
     this.stream = stream
     this.parser = new Parser(this.encoding)
@@ -58,10 +58,10 @@ class XMLStream extends EventEmitter {
       this._currentElement[name].push(newEl)
       this._currentElement = newEl
     } else {
-      this.root[name] = {
+      this._root[name] = {
         $: attrs
       }
-      const el = this.root[name]
+      const el = this._root[name]
       this._currentElement = el
     }
   }
