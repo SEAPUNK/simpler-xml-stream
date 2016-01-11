@@ -13,6 +13,7 @@ class XMLStream extends EventEmitter {
     this.stream.pipe(this.parser)
     this.explicitText = options.explicitText
     this.explicitArrays = options.explicitArrays
+    this.disableAutotrim = options.disableAutotrim
     this._attachEvents()
     this._root = {}
     this._elementTree = [{
@@ -103,6 +104,10 @@ class XMLStream extends EventEmitter {
           el[child] = el[child][0]
         }
       }
+    }
+
+    if (!this.disableAutotrim) {
+      el._ = el._.trim()
     }
 
     if (!this.explicitText) {
