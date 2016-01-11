@@ -14,6 +14,7 @@ class XMLStream extends EventEmitter {
     this._root = {}
     this._elementTree = [this._root]
     this._elementNameTree = []
+    this.stream.pipe(this.parser)
   }
 
   _attachEvents () {
