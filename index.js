@@ -121,7 +121,7 @@ class XMLStream extends EventEmitter {
         }
       }
       if (!hasProps && !children.length) {
-        el = el._ || null // Otherwise, it's 'undefined'.
+        el = el._
         // We also need to set this child on the parent.
         if (!parent.isRoot) {
           parent.element[name][childIndex] = el
