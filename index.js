@@ -97,7 +97,7 @@ class XMLStream extends EventEmitter {
 
     if (!this.explicitArrays) {
       for (let i = 0; i < children.length; i++) {
-        let child = children[child]
+        let child = children[i]
         if (el[child].length === 1) {
           el[child] = el[child][0]
         }
