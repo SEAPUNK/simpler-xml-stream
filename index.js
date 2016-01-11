@@ -106,13 +106,11 @@ class XMLStream extends EventEmitter {
       }
     }
 
-    if (!el._ || el._ === '') {
-      delete el._
-    }
-
     if (el._ && !this.disableAutotrim) {
       el._ = el._.trim()
     }
+    
+    if (!el._ || el._ === '') delete el._
 
     if (!this.explicitText) { // $@#%*!!!!
       let hasProps = false
