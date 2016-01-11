@@ -70,7 +70,8 @@ class XMLStream extends EventEmitter {
     }
     const oldElement = this._currentElement
     this._currentElement = this._elementTree.pop()
-    this.emit('element', oldElement)
+    this.emit('element', oldElement, name)
+    this.emit('element: ' + name, oldElement)
   }
 
   _handleText (text) {
