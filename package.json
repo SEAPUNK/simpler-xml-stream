@@ -1,0 +1,25 @@
+{
+  "name": "simpler-xml-stream",
+  "version": "1.0.0",
+  "description": "XML streams without the hassle",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/seapunk/simpler-xml-stream.git"
+  },
+  "keywords": [
+    "xml",
+    "stream",
+    "parser",
+    "expat"
+  ],
+  "author": "ivan k <ivan@sq10.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/seapunk/simpler-xml-stream/issues"
+  },
+  "homepage": "https://github.com/seapunk/simpler-xml-stream#readme"
+}
