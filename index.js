@@ -10,11 +10,11 @@ class XMLStream extends EventEmitter {
     this.encoding = options.encoding || 'UTF-8'
     this.stream = stream
     this.parser = new Parser(this.encoding)
+    this.stream.pipe(this.parser)
     this._attachEvents()
     this._root = {}
     this._elementTree = [this._root]
     this._elementNameTree = []
-    this.stream.pipe(this.parser)
   }
 
   _attachEvents () {
