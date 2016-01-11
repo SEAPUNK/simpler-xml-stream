@@ -65,7 +65,7 @@ class XMLStream extends EventEmitter {
     }
   }
 
-  _handleEndELement (name) {
+  _handleEndElement (name) {
     if (this._elementNameTree.pop() !== name) {
       return this._handleError(new Error(`parser ended element '${name}', which is not the element we are building`))
     }
